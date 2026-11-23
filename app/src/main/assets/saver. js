@@ -1,0 +1,31 @@
+(function(){
+var IDLE_MIN=0; /* 0 = تُفتح بالأيقونة فقط. ضع 5 مثلًا لتظهر بعد 5 دقائق بلا لمس */
+var st=document.createElement('style');
+st.textContent='#saver{display:none;position:absolute;left:0;top:0;width:1280px;height:720px;z-index:5000;background:#000;align-items:center;justify-content:center}#saver.show{display:flex}#saver svg{width:620px;height:620px;margin-top:-30px}#saver .sd{position:absolute;bottom:26px;left:0;right:0;text-align:center}#saver .sd div:first-child{font-size:22px;color:#7C8896}#saver .sd div:last-child{font-size:16px;color:#4B5560;margin-top:4px}';
+document.head.appendChild(st);
+var A='#38BDF8';
+var o=document.createElement('div');o.id='saver';
+o.innerHTML='<svg viewBox="0 0 600 600" aria-label="ساعة تناظرية">'+
+'<circle cx="300" cy="300" r="292" fill="none" stroke="#1B222B" stroke-width="2"/>'+
+'<circle cx="300" cy="300" r="270" fill="none" stroke="#5B6672" stroke-width="14" stroke-dasharray="3 25.27" stroke-dashoffset="1.5" transform="rotate(-90 300 300)"/>'+
+'<circle cx="300" cy="300" r="262" fill="none" stroke="#EAF0F6" stroke-width="30" stroke-dasharray="7 130.18" stroke-dashoffset="3.5" transform="rotate(-90 300 300)"/>'+
+'<g id="sh"><line x1="300" y1="330" x2="300" y2="165" stroke="#EAF0F6" stroke-width="16" stroke-linecap="round"/></g>'+
+'<g id="sm"><line x1="300" y1="330" x2="300" y2="62" stroke="#EAF0F6" stroke-width="10" stroke-linecap="round"/></g>'+
+'<g id="ss"><line x1="300" y1="355" x2="300" y2="42" stroke="'+A+'" stroke-width="3.5" stroke-linecap="round"/></g>'+
+'<circle cx="300" cy="300" r="13" fill="'+A+'"/><circle cx="300" cy="300" r="4.5" fill="#000"/></svg>'+
+'<div class="sd"><div id="sdt"></div><div>المس الشاشة للعودة</div></div>';
+document.getElementById('app').appendChild(o);
+var iv=null,idle=null;
+function tick(){var t=new Date(),s=t.getSeconds(),m=t.getMinutes()+s/60,h=(t.getHours()%12)+m/60;
+document.getElementById('sh').setAttribute('transform','rotate('+h*30+' 300 300)');
+document.getElementById('sm').setAttribute('transform','rotate('+m*6+' 300 300)');
+document.getElementById('ss').setAttribute('transform','rotate('+s*6+' 300 300)');
+document.getElementById('sdt').textContent=t.toLocaleDateString('ar-EG-u-nu-latn',{weekday:'long',day:'numeric',month:'long'})}
+function show(){if(o.classList.contains('show'))return;tick();o.classList.add('show');iv=setInterval(tick,1000)}
+function hide(){o.classList.remove('show');clearInterval(iv);arm()}
+function arm(){clearTimeout(idle);if(IDLE_MIN>0)idle=setTimeout(show,IDLE_MIN*60000)}
+o.addEventListener('click',hide);
+document.addEventListener('click',function(e){var b=e.target.closest('button');
+if(b&&b.dataset.fn==='saver'){show();return}arm()},true);
+arm();
+})();
