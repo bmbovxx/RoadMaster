@@ -108,7 +108,7 @@ main{flex:1;display:flex;gap:20px;padding:0 32px 20px;min-height:0}
   <button class="on" aria-label="الرئيسية" data-fn="home" data-ic="home"></button>
   <button aria-label="خرائط جوجل" data-pkg="com.google.android.apps.maps" data-ic="nav"></button>
   <button aria-label="الوسائط" data-fn="music" data-ic="music"></button>
-  <button aria-label="الهاتف" data-fn="dial" data-ic="phone"></button>
+  <button aria-label="شاشة التوقف" data-fn="saver" data-ic="clock"></button>
   <button class="last" aria-label="الإعدادات" data-set="android.settings.SETTINGS" data-ic="gear"></button>
  </nav>
  <section class="map">
@@ -168,6 +168,7 @@ prev:'<path fill="currentColor" d="M6 5v14M19 5L9 12l10 7z"/>',
 play:'<path fill="currentColor" d="M7 4l13 8-13 8z"/>',
 next:'<path fill="currentColor" d="M18 5v14M5 5l10 7-10 7z"/>',
 close:'<path d="M5 5l14 14M19 5L5 19"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
 sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
 cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.5-1A3.5 3.5 0 0117 18z"/>',
 rain:'<path d="M7 17a4 4 0 010-8 5 5 0 019.5-1A3.5 3.5 0 0117 17zM8 20l-1 2M12 20l-1 2M16 20l-1 2"/>',
@@ -315,5 +316,6 @@ if(d.set){if(A.openSettings(d.set)===false)toast('تعذّر فتح الإعدا
 })();
 </script>
 <script src="nowplaying.js"></script>
+<script src="saver.js"></script>
 </body>
 </html>
