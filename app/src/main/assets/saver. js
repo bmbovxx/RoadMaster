@@ -1,5 +1,5 @@
 (function(){
-var IDLE_MIN=0; /* 0 = تُفتح بالأيقونة فقط. ضع 5 مثلًا لتظهر بعد 5 دقائق بلا لمس */
+var IDLE_MIN=1; /* 0 = تُفتح بالأيقونة فقط. ضع 5 مثلًا لتظهر بعد 5 دقائق بلا لمس */
 var st=document.createElement('style');
 st.textContent='#saver{display:none;position:absolute;left:0;top:0;width:1280px;height:720px;z-index:5000;background:#000;align-items:center;justify-content:center}#saver.show{display:flex}#saver svg{width:620px;height:620px;margin-top:-30px}#saver .sd{position:absolute;bottom:26px;left:0;right:0;text-align:center}#saver .sd div:first-child{font-size:22px;color:#7C8896}#saver .sd div:last-child{font-size:16px;color:#4B5560;margin-top:4px}';
 document.head.appendChild(st);
