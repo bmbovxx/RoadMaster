@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>RoadMaster</title>
+<style>
+:root{--bg:#0B0F14;--card:#151B23;--card2:#1E2732;--txt:#EAF0F6;--mut:#9FB0C2;--acc:#38BDF8}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:sans-serif}
+button{border:0;font:inherit;color:inherit;cursor:pointer;background:none;padding:0}
+button:active{filter:brightness(1.3)}
+svg{width:100%;height:100%}
+#app{position:absolute;top:0;left:0;width:1280px;height:720px;display:flex;flex-direction:column;transform-origin:0 0}
+header{height:68px;padding:0 32px;display:flex;align-items:center;justify-content:space-between}
+.tm{display:flex;align-items:baseline;gap:16px}
+#clock{font-size:46px;font-weight:700;line-height:1}
+#date{font-size:22px;color:#C9D6E3}
+.wx{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:22px;padding:6px 22px}
+.wx .i{width:40px;height:40px;color:var(--acc)}
+.wx b{display:block;font-size:28px;line-height:1.1}
+.wx small{font-size:15px;color:var(--mut)}
+.st{display:flex;gap:14px}
+.st button{width:48px;height:48px;color:var(--mut)}
+main{flex:1;display:flex;gap:20px;padding:0 32px 20px;min-height:0}
+.rail{width:88px;display:flex;flex-direction:column;gap:12px}
+.rail button{width:88px;height:88px;border-radius:24px;background:var(--card);color:#C9D6E3;padding:25px}
+.rail button.on{background:var(--acc);color:#06222B}
+.rail .last{margin-top:auto}
+.map{flex:1;position:relative;border-radius:28px;overflow:hidden;background:#111821;min-width:0}
+.map>svg{position:absolute;inset:0}
+.map .ct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+.map h2{margin:0;font-size:38px}
+.map .row{display:flex;gap:20px}
+.big{height:84px;padding:0 36px;border-radius:24px;font-size:24px;font-weight:700;background:var(--acc);color:#06222B}
+.big.alt{background:#0B0F14EE;color:var(--txt)}
+.side{width:380px}
+.media{height:100%;background:var(--card);border-radius:28px;padding:26px;display:flex;flex-direction:column;gap:18px}
+.media .h{display:flex;gap:16px;align-items:center}
+.art{width:96px;height:96px;border-radius:20px;background:linear-gradient(135deg,var(--acc),#1E3A5F);flex:none;color:#06222B;padding:26px}
+.media h3{margin:0;font-size:26px}
+.media p{margin:4px 0 0;font-size:17px;color:var(--mut)}
+.ctl{margin-top:auto;display:flex;justify-content:center;align-items:center;gap:20px;direction:ltr}
+.ctl button{width:68px;height:68px;border-radius:34px;background:var(--card2);padding:18px}
+.ctl button.p{width:88px;height:88px;border-radius:44px;background:var(--acc);color:#06222B;padding:24px}
+.dock{height:112px;padding:0 32px 22px;display:flex;align-items:center;gap:16px}
+.dock .t{width:120px;height:84px;border-radius:22px;background:var(--card);color:#C9D6E3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:16px}
+.dock .t i{width:30px;height:30px;display:block}
+.vol{flex:1;height:84px;border-radius:22px;background:var(--card);display:flex;align-items:center;gap:16px;padding:0 24px;color:#C9D6E3;direction:ltr}
+.vol i{width:30px;height:30px;display:block;flex:none}
+.vol input{flex:1;height:48px;accent-color:var(--acc)}
+.vol span{width:32px;font-size:20px;font-weight:600}
+#apps{display:none;position:absolute;left:0;right:0;top:68px;bottom:0;background:var(--bg);padding:0 32px 24px;flex-direction:column;gap:16px}
+#apps.show{display:flex}
+#apps .top{display:flex;justify-content:space-between;align-items:center}
+#apps h2{margin:0;font-size:30px}
+#apps .x{width:56px;height:56px;border-radius:28px;background:var(--card);padding:14px}
+#grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(8,1fr);gap:14px;align-content:start}
+.ap{height:120px;border-radius:20px;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:15px;padding:6px}
+.ap img{width:56px;height:56px}
+.ap span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#toast{position:absolute;bottom:130px;left:50%;transform:translateX(-50%);background:#000D;padding:14px 28px;border-radius:16px;font-size:20px;display:none}
+</style>
+</head>
+<body>
+<div id="app" dir="rtl">
+<header>
+ <div class="tm"><span id="clock">--:--</span><span id="date"></span></div>
+ <div class="wx"><span class="i" id="wxi"></span><div><b id="wxt">--°</b><small id="wxd">جارٍ التحديث</small></div></div>
+ <div class="st">
+  <button aria-label="بلوتوث" data-set="android.settings.BLUETOOTH_SETTINGS" data-ic="bt"></button>
+  <button aria-label="الشبكة" data-set="android.settings.WIFI_SETTINGS" data-ic="wifi"></button>
+ </div>
+</header>
+<main>
+ <nav class="rail">
+  <button class="on" aria-label="الرئيسية" data-fn="home" data-ic="home"></button>
+  <button aria-label="الملاحة" data-pkg="com.google.android.apps.maps" data-ic="nav"></button>
+  <button aria-label="الوسائط" data-fn="music" data-ic="music"></button>
+  <button aria-label="الهاتف" data-fn="dial" data-ic="phone"></button>
+  <button class="last" aria-label="الإعدادات" data-set="android.settings.SETTINGS" data-ic="gear"></button>
+ </nav>
+ <section class="map">
+  <svg aria-hidden="true" viewBox="0 0 660 470" preserveAspectRatio="xMidYMid slice">
+   <rect width="660" height="470" fill="#111821"/>
+   <g fill="#161F2B"><rect x="40" y="40" width="150" height="110" rx="10"/><rect x="250" y="30" width="120" height="130" rx="10"/><rect x="470" y="60" width="150" height="100" rx="10"/><rect x="60" y="250" width="130" height="150" rx="10"/><rect x="470" y="260" width="140" height="160" rx="10"/></g>
+   <path d="M0 200H660M220 0V470M430 0V470M0 90H660" stroke="#263445" stroke-width="16" fill="none"/>
+  </svg>
+  <div class="ct">
+   <h2>الملاحة</h2>
+   <div class="row">
+    <button class="big" data-pkg="com.google.android.apps.maps">خرائط جوجل</button>
+    <button class="big alt" data-pkg="com.waze">Waze</button>
+   </div>
+  </div>
+ </section>
+ <aside class="side">
+  <div class="media">
+   <div class="h"><div class="art" data-ic="music"></div><div><h3>الوسائط</h3><p>تحكّم في المشغّل الحالي</p></div></div>
+   <div class="ctl">
+    <button aria-label="السابق" data-fn="prev" data-ic="prev"></button>
+    <button class="p" aria-label="تشغيل / إيقاف" data-fn="play" data-ic="play"></button>
+    <button aria-label="التالي" data-fn="next" data-ic="next"></button>
+   </div>
+  </div>
+ </aside>
+</main>
+<div class="dock">
+ <button class="t" data-set="android.settings.BLUETOOTH_SETTINGS"><i data-ic="bt"></i>بلوتوث</button>
+ <button class="t" data-set="android.settings.WIFI_SETTINGS"><i data-ic="wifi"></i>الشبكة</button>
+ <button class="t" data-set="android.settings.DISPLAY_SETTINGS"><i data-ic="gear"></i>الشاشة</button>
+ <button class="t" data-fn="apps"><i data-ic="apps"></i>التطبيقات</button>
+ <div class="vol"><i data-ic="vol"></i><input id="vol" type="range" min="0" max="100" value="50" aria-label="مستوى الصوت"><span id="vv">50</span></div>
+</div>
+<div id="apps">
+ <div class="top"><h2>التطبيقات</h2><button class="x" aria-label="إغلاق" data-fn="home" data-ic="close"></button></div>
+ <div id="grid"></div>
+</div>
+<div id="toast"></div>
+</div>
+<script>
+(function(){
+var A=window.Android||{
+ launchPackage:function(){return false},openSettings:function(){return false},dial:function(){return false},
+ openMusic:function(){return false},mediaKey:function(){},setVolume:function(){},getVolume:function(){return 50},
+ getApps:function(){return '[]'}};
+var P={
+home:'<path d="M3 11l9-8 9 8M5 10v10h14V10"/>',
+nav:'<path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+music:'<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/>',
+gear:'<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',
+bt:'<path d="M7 7l10 10-5 4V3l5 4L7 17"/>',
+wifi:'<path d="M3 9a14 14 0 0118 0M6 13a9 9 0 0112 0M9.5 16.5a4 4 0 015 0"/>',
+apps:'<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+vol:'<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 9a4 4 0 010 6"/>',
+prev:'<path fill="currentColor" d="M6 5v14M19 5L9 12l10 7z"/>',
+play:'<path fill="currentColor" d="M7 4l13 8-13 8z"/>',
+next:'<path fill="currentColor" d="M18 5v14M5 5l10 7-10 7z"/>',
+close:'<path d="M5 5l14 14M19 5L5 19"/>',
+sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+cloud:'<path d="M7 18a4 4 0 010-8 5 5 0 019.5-1A3.5 3.5 0 0117 18z"/>',
+rain:'<path d="M7 17a4 4 0 010-8 5 5 0 019.5-1A3.5 3.5 0 0117 17zM8 20l-1 2M12 20l-1 2M16 20l-1 2"/>'};
+function ic(n){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[n]+'</svg>'}
+document.querySelectorAll('[data-ic]').forEach(function(e){e.insertAdjacentHTML('afterbegin',ic(e.dataset.ic))});
+var $=function(i){return document.getElementById(i)};
+function fit(){var s=Math.min(innerWidth/1280,innerHeight/720),a=$('app');a.style.transform='scale('+s+')';a.style.left=(innerWidth-1280*s)/2+'px';a.style.top=(innerHeight-720*s)/2+'px'}
+addEventListener('resize',fit);fit();
+function toast(m){var t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display='none'},2200)}
+function clock(){var t=new Date();
+$('clock').textContent=t.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+$('date').textContent=t.toLocaleDateString('ar-EG-u-nu-latn',{weekday:'long',day:'numeric',month:'long'})}
+clock();setInterval(clock,1000);
+function wmo(c){return c===0?['صافٍ','sun']:c<=3?['غائم جزئيًا','cloud']:c<=48?['ضباب','cloud']:c<=67||(c>=80&&c<=82)?['مطر','rain']:c<=77?['ثلج','cloud']:['عاصفة','rain']}
+function weather(la,lo){
+fetch('https://api.open-meteo.com/v1/forecast?latitude='+la+'&longitude='+lo+'&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto')
+.then(function(r){return r.json()}).then(function(d){
+var w=wmo(d.current.weather_code);
+$('wxt').textContent=Math.round(d.current.temperature_2m)+'°م';
+$('wxd').textContent=w[0]+' · العظمى '+Math.round(d.daily.temperature_2m_max[0])+'° · الصغرى '+Math.round(d.daily.temperature_2m_min[0])+'°';
+$('wxi').innerHTML=ic(w[1])}).catch(function(){$('wxd').textContent='الطقس غير متاح'})}
+$('wxi').innerHTML=ic('sun');
+function loc(){if(!navigator.geolocation){$('wxd').textContent='الموقع غير متاح';return}
+navigator.geolocation.getCurrentPosition(function(p){weather(p.coords.latitude,p.coords.longitude)},function(){$('wxd').textContent='فعّل الموقع لعرض الطقس'},{timeout:20000,maximumAge:600000})}
+loc();setInterval(loc,1800000);
+var v=$('vol');try{v.value=A.getVolume();$('vv').textContent=v.value}catch(e){}
+v.addEventListener('input',function(){$('vv').textContent=v.value;A.setVolume(+v.value)});
+var loaded=false;
+function showApps(on){$('apps').classList.toggle('show',on);
+document.querySelector('.rail .on').classList.toggle('on',!on);
+if(on&&!loaded){loaded=true;var g=$('grid');
+try{JSON.parse(A.getApps()).forEach(function(a){var b=document.createElement('button');b.className='ap';b.dataset.pkg=a.p;
+var im=document.createElement('img');im.src='data:image/png;base64,'+a.i;var s=document.createElement('span');s.textContent=a.n;
+b.appendChild(im);b.appendChild(s);g.appendChild(b)})}catch(e){}}}
+var F={home:function(){showApps(false)},apps:function(){showApps(true)},dial:function(){A.dial()},
+music:function(){if(!A.openMusic())toast('لا يوجد مشغّل وسائط')},
+prev:function(){A.mediaKey(88)},play:function(){A.mediaKey(85)},next:function(){A.mediaKey(87)}};
+document.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var d=b.dataset;
+if(d.fn&&F[d.fn]){F[d.fn]();return}
+if(d.pkg){if(A.launchPackage(d.pkg)===false)toast('التطبيق غير مثبّت');return}
+if(d.set){if(A.openSettings(d.set)===false)toast('تعذّر فتح الإعدادات')}});
+})();
+</script>
+</body>
+</html>
